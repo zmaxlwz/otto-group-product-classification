@@ -1,0 +1,118 @@
+Otto Group 
+
+
+******Problem************
+
+This is a classification problem. Given the 93 features of each product, we need to classify each product into one of 9 categories.
+
+
+******Data Files*********
+
+Each row corresponds to a single product. There are a total of 93 numerical features, which represent counts of different events. All features have been obfuscated and will not be defined any further.
+
+There are nine categories for all products. Each target category represents one of our most important product categories (like fashion, electronics, etc.). The products for the training and testing sets are selected randomly.
+
+*******File descriptions********
+
+trainData.csv - the training set
+testData.csv - the test set
+sampleSubmission.csv - a sample submission file in the correct format
+
+*******Data fields************
+
+id - an anonymous id unique to a product
+feat_1, feat_2, ..., feat_93 - the various features of a product
+target - the class of a product
+
+
+the feat_1 ~ feat_93 fields are all non-negative integers, might be the count number of some stuff
+
+*******train.csv**********
+
+id		: id of each product, starting from 1
+feat_1	: the first feature
+feat_2	: the second feature
+...
+feat_93	: the 93th feature
+target	: the target (class label: Class_1 ~ Class_9 )
+
+
+sample data:
+1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,2,0,0,0,0,1,0,4,1,1,0,0,2,0,0,0,0,0,1,0,0,0,0,1,0,5,0,0,0,0,0,2,0,0,0,0,0,1,0,0,2,0,0,11,0,1,1,0,1,0,7,0,0,0,1,0,0,0,0,0,0,0,2,1,0,0,0,0,1,0,0,0,0,0,0,0,0,Class_1
+2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,2,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,Class_1
+
+#data:  61878
+
+*******test.csv**********
+
+id		: id of each product, starting from 1
+feat_1	: the first feature
+feat_2	: the second feature
+...
+feat_93	: the 93th feature
+
+sample data:
+1,0,0,0,0,0,0,0,0,0,3,0,0,0,3,2,1,0,0,0,0,0,0,0,5,3,1,1,0,0,0,0,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,11,1,20,0,0,0,0,0
+2,2,2,14,16,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,2,0,4,0,4,0,0,0,0,2,0,0,0,8,0,0,0,0,0,0,0,0,2,0,4,0,4,0,0,0,0,0,24,0,0,0,0,0,0,0,0,0,6,8,0,0,0,0,0,0,0,0,0,0,0,2,0,0,4,0,2,0,0,0,0,0,0,4,0,0,2,0
+
+#data: 144368
+
+******sampleSubmission.csv**********
+
+id,Class_1,Class_2,Class_3,Class_4,Class_5,Class_6,Class_7,Class_8,Class_9
+1,1,0,0,0,0,0,0,0,0
+2,1,0,0,0,0,0,0,0,0
+
+#data: 144368
+
+
+******Loss function**********
+
+The loss function is logLoss:
+
+So if we use one hot encoding prediction, the loss will be huge
+We need to use probabilistic prediction
+So probabilistic classifier is preferred.
+
+probabilistic classifier:
+1. Logistic Regression
+
+2. Naive Bayes
+Naive Bayes is fast
+according to the sklearn documentation:
+Naive Bayes is a decent classifier, but is known to be a bad estimator, 
+so the probability outputs fom predict_proba are not to be taken too seriously.
+
+--Multinomial NB(fit for counts of events)
+The result is not good
+
+--Gaussian NB
+The result is even worse.
+this makes sense. Because the features are non-negative integers, which represent counts of events.
+
+3. LDA, QDA
+LDA assumes that each class has a multivariate normal with a common variance matrix. LDA has linear decision boundary.
+this assumption is not consistent with our data features, because our data features are counts of events, which are non-negative integers
+
+QDA doesn't have common covariance matrix assumption, so it has quadratic boundaries.
+
+LDA performs better than Naive Bayes.
+QDA performs much worse.
+
+4. random forest
+
+
+
+*******test set*************
+
+In order to do more test, I split 20% data case from the training set as my own test set, and do test on this set
+Compute the logLoss on the test set, and compare each classifier
+
+total training set:
+61878
+split training set:
+49502
+split test set:
+12376
+
+

@@ -1,0 +1,230 @@
+#assume single class assinment to each product
+
+1. Logistic Regression with default setting
+8.37794
+
+2. SVC with default rbf kernel
+7.15267
+
+3. Random Forest with n_estimator=1000
+6.38846
+
+
+
+#assign each product the probability belonging to each class
+#score on the real test set
+
+1. uniform probability
+2.19722
+
+2. benchmark random forest(use benchmark script)
+1.53076
+
+3. random forest with tree_num=1000
+0.55279
+
+
+#score on the test set split from training set(using 20% of training set)
+
+*****1. uniform probability
+2.19722
+
+*****2. random forest
+tree_num=10, max_depth=None
+1.56343
+
+tree_num=100, max_depth=None
+0.63575
+
+tree_num=1000, max_depth=None
+0.57785
+
+LDA-dimension-reduction + tree_num=100
+0.83051
+
+tree_num=100, max_depth=30
+0.60376
+
+tree_num=1000, max_depth=30
+
+StandardScaler: no improvement
+
+*****3. Logistic Regression
+solver: liblinear
+penalty='l2', C=1.0
+0.67838
+-- on real test set:
+0.66902
+
+penalty='l1', C=1.0
+0.67861
+
+penalty='l2', C=1.0, solver='lbfgs', multi_class='multinomial'
+1.52683
+
+LDA-dimension-reduction + LR with 'l1' penalty
+0.81732
+
+LDA-dimension-reduction + LR with 'l2' penalty
+0.81747
+
+PCA with #dim=8 + LR with 'l2' penalty
+1.10749
+
+-- dimensionality reduction doesn't work well for LR
+
+StandardScaling: not improvement
+
+
+cross-validation for C, and penalty='l2'
+C		0.1		0.2		0.4		0.6		0.8		1.0		4		7		10		30
+loss	0.67966	0.67884	0.67846	0.67838	0.67837	0.67838	0.67859	0.67866	0.67868	0.67874
+
+*****4. Multinomial Naive Bayes
+3.63019
+
+Gaussian Naive Bayes
+7.47494
+
+*****5. LDA
+1.07995
+
+QDA
+6.14418
+
+
+*****6. SVM
+LinearSVC
+2.19329
+
+
+*****7. Stacking
+compute the average probability from serveral classifiers
+
+LDA+LR
+0.71423
+
+LDA+LR+RandomForest(n_tree=100)
+0.61999
+
+LDA+LR+RandomForest(n_tree=1000)
+0.61743
+
+LR+RandomForest(n_tree=100)
+0.59200
+
+LR+RandomForest(n_tree=1000)
+0.58865
+
+
+*****8. Bagging
+on MAC-book
+LR, n_model=10, max_samples=0.5, max_features=0.5
+0.83364
+LR, n_model=10, max_samples=0.8, max_features=0.8
+0.70362
+LR, n_model=10, max_samples=1.0, max_features=1.0
+0.67617
+LR, n_model=100, max_samples=0.5, max_features=0.5
+0.82822
+LR, n_model=100, max_samples=1.0, max_features=1.0
+0.67586
+
+LR, max_samples=1.0, max_features=1.0
+n_model
+10		40		70		100
+0.67617	0.67600	0.67600	0.67586
+
+*****9. Boosting
+Adaboost with decision tree
+max_depth=None, n_model=10
+3.33135
+max_depth=3, n_model=10
+1.65741
+max_depth=5, n_model=10
+1.43116
+max_depth=10, n_model=10
+1.01964
+max_depth=20, n_model=10
+1.01347
+max_depth=30, n_model=10, min_split=2, min_leaf=1
+0.94726
+max_depth=30, n_model=10, min_split=20, min_leaf=10
+0.71990
+max_depth=30, n_model=50, min_split=2, min_leaf=1
+0.73686
+max_depth=30, n_model=50, min_split=20, min_leaf=10
+0.56952
+
+
+*****10. Neural Network
+default:
+0.54322  -- on validation set
+0.52942  -- on real test set
+
+test parameters:
+(1)default:
+#epoch=20, #units in layer1=200, dropout layer, #units in layer2=200
+0.54073
+
+(2)increase #epoch -- helpful to decrease logloss
+#epoch=30, #units in layer1=200, dropout layer, #units in layer2=200
+0.53309
+
+(3)increase #units in layer1 -- quite helpful
+#epoch=20, #units in layer1=500, dropout layer, #units in layer2=200
+0.52110
+#epoch=20, #units in layer1=1000, dropout layer, #units in layer2=200
+0.51376
+#epoch=20, #units in layer1=2000, dropout layer, #units in layer2=200
+0.50780
+-- real test data: 0.50100
+#epoch=40, #units in layer1=5000, dropout layer, #units in layer2=200
+-- real test data: 0.53142
+
+(4) increase #units in layer1 and layer 2 -- no additional benefits
+#epoch=20, #units in layer1=500, dropout layer, #units in layer2=500
+0.52160
+
+(4) add dropout layer -- decrease performance
+#epoch=20, #units in layer1=200, dropout layer, #units in layer2=200, dropout layer
+0.55212
+
+(5)only one hidden layer -- decrease performance
+#epoch=20, #units in layer1=200
+0.56259
+
+(6) one hidden layer + one dropout layer  -- not good
+#epoch=20, #units in layer1=200, dropout layer
+0.55037
+
+(7) increase one layer -- decrease performance
+#epoch=20, #units in layer1=200, dropout layer, #units in layer2=200, dropout layer, #units in layer3=200
+0.55789
+
+
+
+***************performance******************
+Logistic regression
+ratio     training      prediction      logloss
+0.2,       2.34828,       0.00284         0.70470
+0.4,       6.20345,       0.00490         0.68413
+0.6,       9.85742,       0.00725         0.68237
+0.8,       13.74909,      0.00962         0.67615
+1.0,       16.45641,      0.01214         0.67235
+
+Multinomial NB
+ratio     training      prediction      logloss
+0.2       0.03737       0.00419         3.77619
+0.4       0.04680       0.00691         3.70816
+0.6       0.07751       0.01794         3.67689
+0.8       0.08176       0.01520         3.67677
+1.0       0.10226       0.01953         3.81834
+
+LDA
+ratio     training      prediction      logloss
+0.2       0.31684       0.00285         0.99406
+0.4       0.67665       0.00496         0.98127
+0.6       1.13574       0.00737         0.92932
+0.8       1.36707       0.00991         0.93852
+1.0       1.75135       0.01446         0.93261
